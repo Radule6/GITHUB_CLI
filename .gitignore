@@ -1,0 +1,33 @@
+# System files
+.DS_Store
+Thumbs.db
+
+# Compiled code and binaries
+*.o
+*.pyc
+*.exe
+*.dll
+*.so
+*.dylib
+
+# Dependency directories and files
+node_modules/
+vendor/
+.venv/
+.idea/
+.vscode/
+.gradle/
+
+# Log files and backup files
+*.log
+*.bak
+*.swp
+
+# Environment-specific files
+.env
+.env.local
+.env.*.local
+
+# Personal configuration files
+.bash_history
+.viminfo
