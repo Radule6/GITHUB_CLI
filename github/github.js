@@ -27,7 +27,7 @@ export const createRepository = async (repositoryName, isPrivate) => {
         success = true;
         repositoryUrl = response.data.html_url;
         console.log(`Successfully created repository: ${repositoryUrl}`);
-        createLocalDirectory(repositoryName, repositoryUrl)
+        await createLocalDirectory(repositoryName, repositoryUrl)
 
 
     } catch (error) {
