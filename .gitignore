@@ -12,6 +12,7 @@ Thumbs.db
 
 # Dependency directories and files
 node_modules/
+repositories/
 vendor/
 .venv/
 .idea/
