@@ -26,8 +26,8 @@ export const createRepository = async (repositoryName, isPrivate) => {
         // Set the success flag and message
         success = true;
         repositoryUrl = response.data.html_url;
-        console.log(`Successfully created repository: ${repositoryUrl}`);
-        await createLocalDirectory(repositoryName, repositoryUrl)
+        console.log('Successfully created repository: \x1b[1m%s\x1b[0m', repositoryUrl);
+        createLocalDirectory(repositoryName, repositoryUrl)
 
 
     } catch (error) {
@@ -45,14 +45,29 @@ export const createRepository = async (repositoryName, isPrivate) => {
     }
 }
 
-/*
+
 export const listAllRepositories = async () => {
+    let success = false;
+    let errorMessage = null;
     try {
         const response = await octokit.repos.listForAuthenticatedUser()
-        response.data.forEach(repo => console.log(repo.name));
-    } catch (error) { }
-}
+        response.data.forEach(repo => console.log('\x1b[1m%s\x1b[0m', repo.name));
+        success = true;
 
+    } catch (error) {
+        if (error.status === 401) {
+            errorMessage = 'Authentication error: Please check your GitHub token.';
+        } else if (error.status === 422) {
+            errorMessage = 'Error listing repositories';
+        } else {
+            errorMessage = 'Error listing repositories';
+        }
+    }
+    if (!success) {
+        console.error(errorMessage);
+    }
+}
+/*
 export const cloneRepo = () => {
     try { } catch (error) { }
 

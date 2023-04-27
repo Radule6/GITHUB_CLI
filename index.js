@@ -1,8 +1,6 @@
 #!/usr/bin/env node --experimental-modules
 import inquirer from 'inquirer'
-import { createRepository } from './github/github.js';
-
-import { createLocalDirectory } from "./github/helpers/createLocalDirectory.js";
+import { createRepository, listAllRepositories } from './github/github.js';
 const createRepoCommand = async () => {
     const userInput = await inquirer.prompt([
         {
@@ -28,7 +26,10 @@ const createRepoCommand = async () => {
     await createRepository(userInput.repoName, userInput.isPrivate)
     await continuePrompt()
 }
-
+const listUserRepos = async () => {
+    await listAllRepositories()
+    await continuePrompt()
+}
 
 const mainMenu = async () => {
     const answers = await inquirer.prompt([
@@ -38,9 +39,11 @@ const mainMenu = async () => {
             message: 'Select a command:',
             choices: [
                 'create-repo',
-                'list-repos',
+                'clone-repo',
                 'delete-repo',
-                // Add more command choices here
+                'list-repos',
+                'manage-users',
+                'exit'
             ],
         },
     ]);
@@ -53,11 +56,14 @@ const handleCommand = async (command) => {
         case 'create-repo':
             await createRepoCommand();
             break;
-        case 'delete':
+        case 'list-repos':
+            await listUserRepos();
+            break;
+        case 'delete-repo':
             console.log('Thank you for using the GitHub CLI tool. Goodbye!');
             break;
         case 'exit':
-            console.log('Thank you for using the GitHub CLI tool. Goodbye!');
+            console.log('Thank you for using the \x1b[1m%s\x1b[0m tool. Goodbye!', "Github CLI");
             break;
         default:
             console.log(`Unknown command: ${command}`);
