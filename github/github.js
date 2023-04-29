@@ -1,15 +1,12 @@
 import { Octokit } from '@octokit/rest';
 import dotenv from 'dotenv';
-import { createLocalDirectory } from './helpers/createLocalDirectory.js';
+import { createLocalDirectory } from './helpers/createFiles.js';
 import { validateRepositoryCreation } from './errorHandling/handleGithub.js';
 dotenv.config();
-
 
 const GITHUB_AUTH_TOKEN = process.env.GITHUB_AUTH_TOKEN || null
 const octokit = new Octokit({ auth: GITHUB_AUTH_TOKEN });
 const owner = process.env.GITHUB_USERNAME
-
-
 
 export const createRepository = async (repositoryName, isPrivate) => {
     let success = false;
@@ -17,6 +14,7 @@ export const createRepository = async (repositoryName, isPrivate) => {
     let repositoryUrl = null;
 
     try {
+        validateRepositoryCreation(repositoryName, isPrivate)
         // Create the repository on GitHub
         const response = await octokit.repos.createForAuthenticatedUser({
             name: repositoryName,
@@ -49,10 +47,12 @@ export const createRepository = async (repositoryName, isPrivate) => {
 export const listAllRepositories = async () => {
     let success = false;
     let errorMessage = null;
+    let repos = []
     try {
         const response = await octokit.repos.listForAuthenticatedUser()
-        response.data.forEach(repo => console.log('\x1b[1m%s\x1b[0m', repo.name));
+        response.data.forEach(repo => repos.push(repo.name))
         success = true;
+        return repos
 
     } catch (error) {
         if (error.status === 401) {
@@ -67,24 +67,31 @@ export const listAllRepositories = async () => {
         console.error(errorMessage);
     }
 }
-/*
-export const cloneRepo = () => {
-    try { } catch (error) { }
 
-}
-export const deleteRepository = async (owner, repoName) => {
+export const deleteRepository = async (repoName) => {
     try {
         await octokit.repos.delete({
             owner: owner,
             repo: repoName
         })
+        console.log(`Sucessfully deleted repository:${repoName}`);
     } catch (error) {
-
+        if (error.status == 404) {
+            console.log("Unable to delete repository because it does not exist... Check the input please!");
+        }
+        if (error.status == 403) {
+            console.log("Higher level of authorization needed to delete a repo. Check with your issued Github token");
+        }
+        console.log("Error while deleting repository");
     }
 
 }
+export const cloneRepo = () => {
+    try { } catch (error) { }
+
+}
+
 export const manageRepoUsers = () => {
     try { } catch (error) { }
 
 }
-*/

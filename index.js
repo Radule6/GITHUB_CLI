@@ -1,13 +1,10 @@
 #!/usr/bin/env node --experimental-modules
 import { mainMenu, handleCommand } from "./commands/commands.js";
-import { createEnv, createLocalDirectory } from "./github/helpers/createLocalDirectory.js";
+import { checkEnv } from "./github/helpers/createFiles.js";
 
 
-createLocalDirectory("TEST", "TEST")
 
-/*
-await createEnv()
+await checkEnv()
 const command = await mainMenu();
 await handleCommand(command)
 
-*/

@@ -1,4 +1,5 @@
 import inquirer from "inquirer";
+import { deleteRepository, listAllRepositories } from "../github/github.js";
 export const createRepoCommand = async () => {
     const userInput = await inquirer.prompt([
         {
@@ -25,7 +26,28 @@ export const createRepoCommand = async () => {
     await continuePrompt()
 }
 export const listUserRepos = async () => {
-    await listAllRepositories()
+    const repos = await listAllRepositories()
+    repos.forEach(repo => console.log(repo))
+
+    await continuePrompt()
+}
+
+
+export const deleteUserRepo = async () => {
+    const choices = await listAllRepositories()
+    if (choices.length !== 0) {
+        const choice = await inquirer.prompt([{
+            type: "list",
+            name: "choice",
+            message: "Select a repository that you want to delete",
+            choices: [...choices]
+        }])
+
+        await deleteRepository(choice.choice)
+    }
+    else {
+        console.log("You have no repositories to delete! You have to create one to be able to delete one :D");
+    }
     await continuePrompt()
 }
 
@@ -58,7 +80,7 @@ export const handleCommand = async (command) => {
             await listUserRepos();
             break;
         case 'delete-repo':
-            console.log('Thank you for using the GitHub CLI tool. Goodbye!');
+            await deleteUserRepo();
             break;
         case 'exit':
             console.log('Thank you for using the \x1b[1m%s\x1b[0m tool. Goodbye!', "Github CLI");

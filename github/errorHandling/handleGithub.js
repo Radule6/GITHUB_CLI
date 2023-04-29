@@ -3,7 +3,7 @@
 *This method checks the validity of the parametrs that are needed for creating a repository
 *
 */
-export function validateRepositoryCreation(repoName, isPrivate) {
+export function validateRepositoryCreation(repositoryName, isPrivate) {
     if (!repositoryName) {
         console.error('Repository name is required.');
         return;

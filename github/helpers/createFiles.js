@@ -2,7 +2,7 @@ import fs from 'fs';
 import { exec } from 'child_process';
 import inquirer from 'inquirer';
 export async function createLocalDirectory(repositoryName, repositoryUrl) {
-    const repositoriesFolder = "./repositories1"
+    const repositoriesFolder = "./repositories"
     //need to create repositories folder, then check if it exists etc
     if (!fs.existsSync(repositoriesFolder)) {
         fs.mkdir(repositoriesFolder, (err) => {
@@ -33,9 +33,7 @@ export async function createLocalDirectory(repositoryName, repositoryUrl) {
     console.log(`To start using your git folder change directory to ${localFolder} and run this command git remote add origin \x1b[1m%s\x1b[0m `, gHRemoteBranchCommand);
 }
 
-export async function createEnv() {
-    //if the app is loaded first time it should create a .env file and ask the user to provide its credentials and github auth token with all the necessary privililges
-
+export async function checkEnv() {
     const file = './.env'
 
     if (!fs.existsSync(file)) {
