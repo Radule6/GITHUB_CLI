@@ -2,29 +2,21 @@ import fs from 'fs';
 import { exec } from 'child_process';
 import inquirer from 'inquirer';
 export async function createLocalDirectory(repositoryName, repositoryUrl) {
-    const repositoriesFolder = "./repositories"
-    //need to create repositories folder, then check if it exists etc
-    if (!fs.existsSync(repositoriesFolder)) {
-        fs.mkdir(repositoriesFolder, (err) => {
-            if (err)
-                throw err;
-            console.log("Created the repositry folder");
 
-        })
-    }
+    await checkRepoFolder()
 
     const localFolder = `./${repositoriesFolder}/${repositoryName}`
     const gitInitCmd = `cd ${localFolder} && git init`;
     const gHRemoteBranchCommand = `${repositoryUrl}.git`
     await fs.mkdir(localFolder, (error) => {
         if (error) {
-            console.error(error)
+            console.error("Error while creating the folder")
             return
         }
     })
     exec(gitInitCmd, (err, stdout, stderr) => {
         if (err) {
-            console.error(err);
+            console.error("Error while initializing git");
             return;
         }
 
@@ -49,8 +41,6 @@ export async function checkEnv() {
         const envString = `GITHUB_AUTH_TOKEN=${credentials.GITHUB_AUTH_TOKEN}\nGITHUB_USERNAME=${credentials.GITHUB_USERNAME}`
         writeToFile(file, envString)
     }
-
-
     return;
 }
 
@@ -58,8 +48,22 @@ function writeToFile(name, data) {
     fs.writeFile(name, data, (err) => {
         if (err) {
             console.log("Unable to create file");
-            throw err;
+            return;
         }
         console.log("Data has been written to file successfully.");
     });
+}
+
+export async function checkRepoFolder() {
+    const repositoriesFolder = "./repositories"
+    if (!fs.existsSync(repositoriesFolder)) {
+        fs.mkdir(repositoriesFolder, (err) => {
+            if (err) {
+                console.error("Error while creating the repositories folder")
+                return;
+            }
+        })
+    }
+    console.log("Created the repositry folder");
+
 }
